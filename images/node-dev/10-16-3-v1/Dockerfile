@@ -11,7 +11,7 @@ RUN chown node:node .
 # base image is built)
 RUN npm i -g npm@latest
 
-COPY ../scripts /usr/local/src/app-scripts
+COPY ./scripts /usr/local/src/app-scripts
 
 WORKDIR /usr/local/src/app
 ENV PATH=$PATH:/usr/local/src/app/node_modules/.bin \
