@@ -13,12 +13,16 @@ set -o posix    # more strict failures in subshells
 IFS=$'\n\t'
 # ---- End unofficial bash strict mode boilerplate
 
-cd /usr/local/src/app
+run_user="node"
 # change the node user's uid:gid to match the repo root directory's
-usermod --uid "$(stat -c "%u" .)" --non-unique node |& grep -v "no changes" || true
-/usr/local/src/app-scripts/fix-volumes.sh
-unset IFS
+usermod --uid "$(stat -c "%u" .)" --non-unique "${run_user}" |& grep -v "no changes" || true
+"$(dirname "${BASH_SOURCE[0]}")/fix-volumes.sh"
+command=(npm run start:dev)
+if [[ $# -gt 0 ]]; then
+  read -r -a command <<<"$@"
+fi
 echo "Installing dependencies..."
 su-exec node npm install --no-audit
 echo "Starting the project in development mode..."
-exec su-exec node npm run start:dev
+unset IFS
+exec su-exec "${run_user}" "${command[@]}"
