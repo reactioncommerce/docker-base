@@ -19,7 +19,8 @@ usermod --uid "$(stat -c "%u" .)" --non-unique "${run_user}" |& grep -v "no chan
 "$(dirname "${BASH_SOURCE[0]}")/fix-volumes.sh"
 command=(npm run start:dev)
 if [[ $# -gt 0 ]]; then
-  read -r -a command <<<"$@"
+  # shellcheck disable=SC2206
+  command=($@)
 fi
 echo "Installing dependencies..."
 su-exec node npm install --no-audit
