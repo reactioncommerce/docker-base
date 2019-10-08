@@ -13,22 +13,22 @@ set -o posix    # more strict failures in subshells
 IFS=$'\n\t'
 # ---- End unofficial bash strict mode boilerplate
 
-cd /usr/local/src/app
+volumes=$(mount | grep -E '^/dev/' | grep -Ev ' on /etc/' || true)
+if [[ -z "${volumes}" ]]; then
+  exit
+fi
 owner=$(stat -c "%u:%g" .)
-volumes=(
-  ./node_modules
-  ./build
-  /home/node/.cache/yarn
-  /home/node/.cache/yarn-offline-mirror
-)
-for dir in ${volumes[*]}; do
-  mkdir -p "${dir}"
-  old_owner=$(stat -c "%u:%g" "${dir}")
-  if [[ "$1" != "--force" && "${old_owner}" == "${owner}" ]]; then
-    continue
-  fi
-  printf "Fixing volume ${dir} (before=${old_owner} after=${owner})…"
-  chown -R "${owner}" "${dir}"
-  chmod -R a+r,u+rw "${dir}"
-  echo "✓"
-done
+echo "${volumes}" | awk '{print $3}' | {
+  while IFS= read -r dir; do
+    echo "${dir}"
+    mkdir -p "${dir}"
+    old_owner=$(stat -c "%u:%g" "${dir}")
+    if [[ "$1" != "--force" && "${old_owner}" == "${owner}" ]]; then
+      continue
+    fi
+    printf "Fixing volume %s (before=%s after=%s)…" "${dir}" "${old_owner}" "${owner}"
+    chown -R "${owner}" "${dir}"
+    chmod -R a+r,u+rw "${dir}"
+    echo "✓"
+  done
+}
