@@ -19,6 +19,8 @@ jobs:
           command: hadolint ./images/node-prod/12-10-0-v1/Dockerfile
 
   docker-build:
+    docker:
+      - image: circleci/node:12.10.0
     steps:
       - checkout
       - run:
@@ -35,6 +37,8 @@ jobs:
           command: ./images/node-prod/12-10-0-v1/build.sh
 
   docker-push:
+    docker:
+      - image: circleci/node:12.10.0
     steps:
       - checkout
       - run:
