@@ -54,7 +54,7 @@ workflows:
   version: 2
   check_and_deploy:
     jobs:
-      - dockerfile-lint:
+      - dockerfile-lint
       - docker-build:
           context: reaction-build-read
           requires:
