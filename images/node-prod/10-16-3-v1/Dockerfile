@@ -1,7 +1,7 @@
 FROM node:10.16.3-alpine
 
 # hadolint ignore=DL3018
-RUN apk --no-cache add bash curl less tini vim
+RUN apk --no-cache add bash curl less tini vim make
 SHELL ["/bin/bash", "-o", "pipefail", "-o", "errexit", "-u", "-c"]
 
 WORKDIR /usr/local/src/app
