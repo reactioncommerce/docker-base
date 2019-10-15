@@ -1,5 +1,7 @@
 # Reaction Docker Base Images
 
+[![CircleCI](https://circleci.com/gh/reactioncommerce/docker-base/tree/trunk.svg?style=svg)](https://circleci.com/gh/reactioncommerce/docker-base/tree/trunk)
+
 This repo contains general Docker images used by various [Reaction Commerce](https://www.reactioncommerce.com/index) projects. Refer to the specific image documentation.
 
 Images:
