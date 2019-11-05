@@ -24,23 +24,7 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
-          name: Docker build node-dev/10.16.3-v1
-          command: ./images/node-dev/10-16-3-v1/build.sh
-      - run:
-          name: Docker build node-dev/12.10.0-v1
-          command: ./images/node-dev/12-10-0-v1/build.sh
-      - run:
-          name: Docker build node-dev/10.16.3-v2
-          command: ./images/node-dev/10-16-3-v2/build.sh
-      - run:
-          name: Docker build node-dev/12.10.0-v2
-          command: ./images/node-dev/12-10-0-v2/build.sh
-      - run:
-          name: Docker build node-prod/10.16.3-v1
-          command: ./images/node-prod/10-16-3-v1/build.sh
-      - run:
-          name: Docker build node-prod/12.10.0-v1
-          command: ./images/node-prod/12-10-0-v1/build.sh
+          command: ./dockerfiles.sh build
 
   docker-push:
     <<: *defaults
@@ -53,12 +37,7 @@ jobs:
           command: |
             if [ -z "$CIRCLE_PR_USERNAME" ]; then \
               docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-              ./images/node-dev/10-16-3-v1/push.sh
-              ./images/node-dev/12-10-0-v1/push.sh
-              ./images/node-dev/10-16-3-v2/push.sh
-              ./images/node-dev/12-10-0-v2/push.sh
-              ./images/node-prod/10-16-3-v1/push.sh
-              ./images/node-prod/12-10-0-v1/push.sh
+              ./dockerfiles.sh push
             else
               echo "No deploy for forks"
             fi
