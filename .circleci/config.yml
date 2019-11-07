@@ -5,56 +5,20 @@ version: 2
 defaults: &defaults
   docker:
     - image: circleci/node:12.10.0
-  environment:
-    CI_SCRIPTS: 'npx --quiet --package @reactioncommerce/ci-scripts@1.8.4'
+
 jobs:
-  lint-dockerfiles:
+  main:
     <<: *defaults
     steps:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
-          command: ${CI_SCRIPTS} lint-dockerfiles
-
-  docker-build:
-    <<: *defaults
-    steps:
-      - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          command: ./dockerfiles.sh build
-
-  docker-push:
-    <<: *defaults
-    steps:
-      - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: Docker Push
-          command: |
-            if [ -z "$CIRCLE_PR_USERNAME" ]; then \
-              docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-              ./dockerfiles.sh push
-            else
-              echo "No deploy for forks"
-            fi
+          command: ./.circleci/main.sh
 
 workflows:
   version: 2
-  check_and_deploy:
+  main:
     jobs:
-      - lint-dockerfiles
-      - docker-build:
+      - main:
           context: reaction-build-read
-          requires:
-            - lint-dockerfiles
-      - docker-push:
-          context: reaction-publish-docker
-          requires:
-            - docker-build
-          filters:
-            branches:
-              only: trunk
