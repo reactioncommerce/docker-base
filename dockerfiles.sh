@@ -14,6 +14,7 @@ IFS=$'\n\t'
 # ---- End unofficial bash strict mode boilerplate
 
 dockerfiles_to_process() {
+  # shellcheck disable=SC2206
   declare -a args=($@)
   if [[ ${#args[@]} -gt 0 ]]; then
     printf '%s\n' "${args[@]}"
@@ -29,11 +30,12 @@ main() {
 
   dockerfiles_to_process "$@" | {
     while IFS= read -r file_path; do
-      name=$(echo "${file_path}" |  awk -F / '{print $(NF-2)}')
+      name=$(echo "${file_path}" | awk -F / '{print $(NF-2)}')
       context_dir=$(dirname "${file_path}")
-      tag=$(echo "${file_path}" |  awk -F / '{print $(NF-1)}')
+      tag=$(echo "${file_path}" | awk -F / '{print $(NF-1)}')
       case "${subcommand}" in
       build)
+        echo -e "\n\n----------\nBuilding ${name}:${tag} from ${context_dir}"
         docker build -t "reactioncommerce/${name}:${tag}" "${context_dir}"
         ;;
       push)
