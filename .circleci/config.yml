@@ -35,12 +35,12 @@ jobs:
       - run:
           name: Docker Push
           command: |
-            if [ -z "$CIRCLE_PR_USERNAME" ]; then \
-              docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-              ./dockerfiles.sh push
-            else
-              echo "No deploy for forks"
+            if [[ -n "${CIRCLE_PR_USERNAME}" ]]; then \
+              echo "Skip docker push for unmerged pull requests"
+              return
             fi
+            docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
+            ./dockerfiles.sh push
 
 workflows:
   version: 2
