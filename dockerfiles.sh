@@ -35,9 +35,12 @@ main() {
       tag=$(echo "${file_path}" |  awk -F / '{print $(NF-1)}')
       case "${subcommand}" in
       build)
+        # Copy root /scripts to context /scripts
         context_scripts_dir="${context_dir}/scripts"
         root_scripts_dir="${root_dir}/scripts"
         cp -a "${root_scripts_dir}/." "${context_scripts_dir}"
+
+        # Do build
         docker build -t "reactioncommerce/${name}:${tag}" "${context_dir}"
         ;;
       push)
