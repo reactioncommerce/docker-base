@@ -24,6 +24,7 @@ dockerfiles_to_process() {
 
 main() {
   cd "$(dirname "${BASH_SOURCE[0]}")"
+  root_dir="$(pwd -P)"
   subcommand="$1"
   shift
 
@@ -34,6 +35,9 @@ main() {
       tag=$(echo "${file_path}" |  awk -F / '{print $(NF-1)}')
       case "${subcommand}" in
       build)
+        context_scripts_dir="${context_dir}/scripts"
+        root_scripts_dir="${root_dir}/scripts"
+        cp -a "${root_scripts_dir}/." "${context_scripts_dir}"
         docker build -t "reactioncommerce/${name}:${tag}" "${context_dir}"
         ;;
       push)
