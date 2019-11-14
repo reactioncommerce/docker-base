@@ -25,6 +25,9 @@ dockerfiles_to_process() {
 main() {
   cd "$(dirname "${BASH_SOURCE[0]}")"
   root_dir="$(pwd -P)"
+  root_build_dir="${root_dir}/build"
+  root_build_scripts_dir="${root_build_dir}/scripts"
+  root_scripts_dir="${root_dir}/scripts"
   subcommand="$1"
   shift
 
@@ -35,13 +38,17 @@ main() {
       tag=$(echo "${file_path}" |  awk -F / '{print $(NF-1)}')
       case "${subcommand}" in
       build)
-        # Copy root /scripts to context /scripts
-        context_scripts_dir="${context_dir}/scripts"
-        root_scripts_dir="${root_dir}/scripts"
-        cp -a "${root_scripts_dir}/." "${context_scripts_dir}"
+        # Clear build dir
+        rm -rf "${root_build_dir}"
+
+        # Copy root /scripts and image context to build dir. Copy image-specific
+        # scripts second so that they could overwrite root scripts if necessary.
+        mkdir -p "${root_build_scripts_dir}"
+        cp -a "${root_scripts_dir}/." "${root_build_scripts_dir}"
+        cp -a "${context_dir}/." "${root_build_dir}"
 
         # Do build
-        docker build -t "reactioncommerce/${name}:${tag}" "${context_dir}"
+        docker build -t "reactioncommerce/${name}:${tag}" "${root_build_dir}"
         ;;
       push)
         docker push "reactioncommerce/${name}:${tag}"
