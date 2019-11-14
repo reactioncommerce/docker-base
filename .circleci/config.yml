@@ -26,12 +26,15 @@ jobs:
       - run:
           command: ./dockerfiles.sh build
 
-  docker-push:
+  docker-build-push:
     <<: *defaults
     steps:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
+      - run:
+          name: Docker Build
+          command: ./dockerfiles.sh build
       - run:
           name: Docker Push
           command: |
@@ -51,10 +54,13 @@ workflows:
           context: reaction-build-read
           requires:
             - lint-dockerfiles
-      - docker-push:
+          filters:
+            branches:
+              ignore: trunk
+      - docker-build-push:
           context: reaction-publish-docker
           requires:
-            - docker-build
+            - lint-dockerfiles
           filters:
             branches:
               only: trunk
