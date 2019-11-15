@@ -18,6 +18,12 @@ if [[ -z "${volumes}" ]]; then
   exit
 fi
 owner=$(stat -c "%u:%g" .)
+if [[ "${owner}" =~ ^0: ]]; then
+  echo "$(basename "$0") aborting instead of chowning to root."
+  echo "Found owner ${owner} on ${PWD}."
+  exit
+fi
+
 echo "${volumes}" | awk '{print $3}' | {
   while IFS= read -r dir; do
     echo "${dir}"
