@@ -48,7 +48,7 @@ main() {
         cp -a "${context_dir}/." "${root_build_dir}"
 
         # Do build
-        docker build -t "reactioncommerce/${name}:${tag}" "${root_build_dir}"
+        docker build --no-cache -t "reactioncommerce/${name}:${tag}" "${root_build_dir}"
         ;;
       push)
         docker push "reactioncommerce/${name}:${tag}"
