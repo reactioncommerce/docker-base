@@ -16,7 +16,7 @@ IFS=$'\n\t'
 run_user="node"
 # change the node user's uid:gid to match the repo root directory's
 usermod --uid "$(stat -c "%u" .)" --non-unique "${run_user}" |& grep -v "no changes" || true
-"$(dirname "${BASH_SOURCE[0]}")/fix-volumes.sh"
+"$(dirname "${BASH_SOURCE[0]}")/fix-volumes.sh" "${run_user}"
 command=(npm run start:dev)
 if [[ $# -gt 0 ]]; then
   # shellcheck disable=SC2206

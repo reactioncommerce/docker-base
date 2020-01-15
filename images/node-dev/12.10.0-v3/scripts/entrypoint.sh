@@ -22,7 +22,7 @@ if [[ "${uid}" == "0" ]]; then
 fi
 run_user="node"
 usermod --uid "${uid}" --non-unique "${run_user}" |& grep -v "no changes" || true
-"$(dirname "${BASH_SOURCE[0]}")/fix-volumes.sh"
+"$(dirname "${BASH_SOURCE[0]}")/fix-volumes.sh" "${run_user}"
 command=(npm run start:dev)
 if [[ $# -gt 0 ]]; then
   # shellcheck disable=SC2206
