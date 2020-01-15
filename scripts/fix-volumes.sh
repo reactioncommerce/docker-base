@@ -24,15 +24,27 @@ if [[ -z "${volumes}" ]]; then
   exit
 fi
 
-desired_owner_user=$1
-owner="$(id -u ${desired_owner_user}):$(id -g ${desired_owner_user})"
+# Volumes need some fixing both on Linux and on Mac OSX, but for different reasons.
+# Here we are basically trying to detect which reason. On Mac, all linked volumes
+# are always owned by root, even if that directory is present in the image with
+# different ownership. On Linux, they are owned by `node` user, but the UID may
+# be incorrectly carried in from the host machine. So the `if` below should be
+# true only on Mac.
+#
+# On Linux, we "fix" by copying the working directory ownership to all volumes,
+# in conjunction with changing the `node` user's UID to match the host machine,
+# which was done earlier, outside of this script.
+#
+# On Mac, we "fix" by setting directory ownership to the container `node` user's
+# UID:GID for every volume. The UID mismatch that happens sometimes on Linux
+# is never an issue on Mac.
+owner=$(stat -c "%u:%g" .)
 if [[ "${owner}" =~ ^0: ]]; then
-  echo "fix-volumes: $(basename "$0") aborting instead of chowning to root."
-  echo "fix-volumes: Found owner ${owner} on ${PWD}."
-  exit
+  desired_owner_user=$1
+  owner="$(id -u ${desired_owner_user}):$(id -g ${desired_owner_user})"
 fi
 
-echo "fix-volumes: Fixing all volumes to be owned by user '${desired_owner_user}''"
+echo "fix-volumes: Fixing all volumes to be owned by '${owner}'"
 echo "${volumes}" | awk '{print $3}' | {
   while IFS= read -r dir; do
     mkdir -p "${dir}"
