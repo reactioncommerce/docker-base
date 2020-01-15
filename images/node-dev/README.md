@@ -15,7 +15,7 @@ There are multiple versions of the Docker image, which are pushed to DockerHub a
 Under the service in `docker-compose.yml`:
 
 ```
-image: reactioncommerce/node-dev:12.10.0-v1
+image: reactioncommerce/node-dev:12.14.1-v1
 volumes:
   - .:/usr/local/src/app:cached
   - reaction_api_node_modules:/usr/local/src/app/node_modules # do not link node_modules in, and persist it between dc up runs
