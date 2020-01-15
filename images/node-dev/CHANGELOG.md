@@ -5,7 +5,11 @@
 Create a new image, `12.14.1-v1`, which:
 
 - is updated to the 12.14.1 LTS version of Node
-- uses the same entry point script as `12.10.0-v3` but with a slight change to the last `echo` so that "Starting the project in development mode..." is printed only for `docker-compose up` and not for `docker-compose run`.
+- uses the same entry point script as `12.10.0-v4` but with a slight change to the last `echo` so that "Starting the project in development mode..." is printed only for `docker-compose up` and not for `docker-compose run`.
+
+## 10.16.3-v4 and 12.10.0-v4
+
+Update the `fix-volumes.sh` script so it will fix volumes correctly on Mac while still working on Linux, too. Also better "fix-volumes" logging.
 
 ## 10.16.3-v3 and 12.10.0-v3
 
