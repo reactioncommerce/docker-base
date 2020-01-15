@@ -13,11 +13,6 @@ set -o posix    # more strict failures in subshells
 IFS=$'\n\t'
 # ---- End unofficial bash strict mode boilerplate
 
-if [[ "$#" -ne 1 ]]; then
-  echo "Usage: $0 [desired_owner_user]" 1>&2
-  exit 1
-fi
-
 volumes=$(mount | grep -E '^/dev/' | grep -Ev ' on /etc/' || true)
 if [[ -z "${volumes}" ]]; then
   echo "fix-volumes: No volumes found"
@@ -41,7 +36,11 @@ fi
 owner=$(stat -c "%u:%g" .)
 if [[ "${owner}" =~ ^0: ]]; then
   desired_owner_user=$1
-  owner="$(id -u ${desired_owner_user}):$(id -g ${desired_owner_user})"
+  if [[ -z "${desired_owner_user}" ]]; then
+    owner="1000:1000" # use a reasonable guess if no argument was provided
+  else
+    owner="$(id -u ${desired_owner_user}):$(id -g ${desired_owner_user})"
+  fi
 fi
 
 echo "fix-volumes: Fixing all volumes to be owned by '${owner}'"
@@ -49,7 +48,7 @@ echo "${volumes}" | awk '{print $3}' | {
   while IFS= read -r dir; do
     mkdir -p "${dir}"
     old_owner=$(stat -c "%u:%g" "${dir}")
-    if [[ "$1" != "--force" && "${old_owner}" == "${owner}" ]]; then
+    if [[ "${old_owner}" == "${owner}" ]]; then
       echo "fix-volumes: Skipping volume ${dir}. Already owned by ${owner}"
       continue
     fi
