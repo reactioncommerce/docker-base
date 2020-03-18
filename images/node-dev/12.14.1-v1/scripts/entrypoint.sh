@@ -22,8 +22,9 @@ if [[ "${uid}" == "0" ]]; then
 fi
 run_user="node"
 usermod --uid "${uid}" --non-unique "${run_user}" |& grep -v "no changes" || true
+scripts_dir="$(dirname "${BASH_SOURCE[0]}")"
 
-"$(dirname "${BASH_SOURCE[0]}")/fix-volumes.sh" "${run_user}"
+"${scripts_dir}/fix-volumes.sh" "${run_user}"
 
 command=(npm run start:dev)
 if [[ $# -gt 0 ]]; then
@@ -32,9 +33,9 @@ if [[ $# -gt 0 ]]; then
   command_override=true
 fi
 
-if [[ -f /usr/local/src/app/package.json ]]; then
+if [[ -f package.json ]]; then
   echo "Installing dependencies..."
-  if [[ -f /usr/local/src/app/yarn.lock ]]; then
+  if [[ -f yarn.lock ]]; then
     echo "(Using Yarn because there is a yarn.lock file)"
     su-exec node yarn install
   else
