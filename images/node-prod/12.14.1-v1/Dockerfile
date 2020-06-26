@@ -24,14 +24,17 @@ RUN npm i -g npm@latest
 # effectively making it optional to have a LICENSE file.
 # But the others are on their own line so that the build
 # will fail if they are not present in the project.
+ONBUILD ARG NPM_TOKEN
 ONBUILD COPY --chown=node:node package.json ./
-ONBUILD COPY --chown=node:node package-lock.json LICENSE* ./
+ONBUILD COPY --chown=node:node package-lock.json .npmrc* LICENSE* ./
 ONBUILD COPY --chown=node:node ./src ./src
 
 USER node
 
 # Install dependencies
 ONBUILD RUN npm ci --only=prod --ignore-scripts
+# delete npm token
+ONBUILD RUN rm -f .npmrc || :
 
 # If any Node flags are needed, they can be set in
 # the NODE_OPTIONS env variable.
