@@ -1,5 +1,10 @@
 # Change Log
 
+## 14.11.0-v1
+
+- New base dev and prod images based on node v14.11.0
+- Had to add g++ alpine package as a dependency to get sharp dependency to build
+
 ## 12.14.1-v1
 
 Create a new image, `12.14.1-v1`, which:
