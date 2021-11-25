@@ -1,5 +1,9 @@
 # Change Log
 
+## 14.18.1-v1
+
+- Update node base to 14.18.1
+
 ## 14.11.0-v1
 
 - New base dev and prod images based on node v14.11.0
