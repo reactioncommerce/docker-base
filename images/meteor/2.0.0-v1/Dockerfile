@@ -5,6 +5,11 @@
 # https://github.com/meteor/meteor/blob/release/METEOR%401.11.1/meteor#L3
 FROM node:12.20.1
 
+# this is required because of expired let's encrypt certificates on meteor servers
+# https://docs.meteor.com/expired-certificate.html
+USER root
+RUN apt update && apt install libgnutls30
+
 SHELL ["/bin/bash", "-o", "pipefail", "-o", "errexit", "-u", "-c"]
 
 ENV METEOR_VERSION 2.0
@@ -20,4 +25,4 @@ RUN wget -O /tmp/install_meteor.sh https://install.meteor.com \
  && sh /tmp/install_meteor.sh \
  && rm /tmp/install_meteor.sh
 
-LABEL maintainer="Reaction Commerce <engineering@reactioncommerce.com>"
+LABEL maintainer="Reaction Commerce <hello-open-commerce@mailchimp.com>"
