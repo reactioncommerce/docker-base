@@ -1,5 +1,3 @@
-
-
 # Some Meteor commands fail if we use one of the slimmer Node images.
 # Make sure we use the exact version of node shipped with this exact
 # version of meteor.
